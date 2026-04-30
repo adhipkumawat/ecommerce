@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
-
+const [open, setOpen] = useState(false);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -45,29 +45,54 @@ export default function Navbar() {
 
         {/* 🔥 USER / LOGIN SWITCH */}
         {user ? (
-          <div className="flex items-center gap-3">
+  <div className="relative">
+    <button
+      onClick={() => setOpen(!open)}
+      className="flex items-center gap-3"
+    >
+      <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-semibold">
+        {user.name?.charAt(0).toUpperCase()}
+      </div>
 
-            {/* Avatar */}
-            <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-semibold">
-              {user.name?.charAt(0).toUpperCase()}
-            </div>
 
-            {/* Name */}
-            <span className="text-sm">{user.name}</span>
+    </button>
 
-            {/* Logout */}
-            <button
-              onClick={logout}
-              className="text-sm text-gray-300 hover:text-white"
-            >
-              Logout
-            </button>
+    {open && (
+      <div className="absolute right-0 mt-4 w-64 rounded-2xl bg-white text-black shadow-xl border border-black/10 p-4">
+        <div className="flex items-center gap-3 border-b pb-4">
+          <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-semibold">
+            {user.name?.charAt(0).toUpperCase()}
           </div>
-        ) : (
-          <Link href="/login" className="hover:text-gray-300">
-            Login
-          </Link>
-        )}
+
+          <div>
+            <p className="font-semibold">{user.name}</p>
+            <p className="text-sm text-gray-500">{user.email}</p>
+          </div>
+        </div>
+
+        <div className="py-4 space-y-2 text-sm">
+          <p>
+            Role:{" "}
+            <span className="font-medium">
+              {localStorage.getItem("role")}
+            </span>
+          </p>
+        </div>
+
+        <button
+          onClick={logout}
+          className="w-full rounded-full bg-black text-white py-2 text-sm hover:bg-gray-800 transition"
+        >
+          Logout
+        </button>
+      </div>
+    )}
+  </div>
+) : (
+  <Link href="/login" className="hover:text-gray-300">
+    Login
+  </Link>
+)}
 
         {/* Bag */}
         <BagDrawer />
