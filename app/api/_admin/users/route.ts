@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
-import { users } from "../register/route";
+import clientPromise from "../../../../lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export async function GET() {
-  return NextResponse.json({ count: users.length, users: users.map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role })) });
+  const client = await clientPromise;
+  const usersCollection = client.db("ecommerce").collection("users");
+  const users = await usersCollection.find().toArray();
+
+  return NextResponse.json({
+    count: users.length,
+    users: users.map((u) => ({ id: u._id.toString(), name: u.name, email: u.email, role: u.role })),
+  });
 }
 
 export async function POST(req: Request) {
@@ -10,8 +18,8 @@ export async function POST(req: Request) {
   const { action, id } = body;
 
   if (action === "delete") {
-    const idx = users.findIndex((u) => u.id === id);
-    if (idx > -1) users.splice(idx, 1);
+    if (!id) return NextResponse.json({ message: "id required" }, { status: 400 });
+    await (await clientPromise).db("ecommerce").collection("users").deleteOne({ _id: new ObjectId(id) });
     return NextResponse.json({ ok: true });
   }
 
