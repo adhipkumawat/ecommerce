@@ -2,34 +2,50 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
  const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-  const res = await fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const base = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
+    const endpoint = base ? `${base}/login` : "/api/login";
 
-  const data = await res.json();
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-  if (!res.ok) {
-    alert(data.message);
-    return;
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data?.message || "Login failed");
+      setLoading(false);
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    router.push("/");
+  } catch (err: any) {
+    setError(err?.message || "An unexpected error occurred");
+  } finally {
+    setLoading(false);
   }
-
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("role", data.role);
-  localStorage.setItem("user", JSON.stringify(data.user));
-
-  window.location.href = "/";
 };
 
   return (
@@ -38,7 +54,7 @@ export default function LoginPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-semibold">Login</h1>
           <p className="text-white/60 mt-2">
-            Welcome back to Le Wilson store
+            Welcome back to DA store
           </p>
         </div>
 
@@ -69,11 +85,16 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full rounded-full bg-white text-black py-3 font-medium hover:bg-white/80 transition"
+            disabled={loading}
+            className="w-full rounded-full bg-white text-black py-3 font-medium hover:bg-white/80 transition disabled:opacity-60"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-400">{error}</p>
+        )}
 
         <p className="text-center text-sm text-white/50 mt-6">
           Don't have an account?{" "}

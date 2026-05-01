@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { div } from "framer-motion/client";
+import { useCart } from "./CartContext";
+import { products } from "../data/products";
 
 export default function BagDrawer() {
   const [open, setOpen] = useState(false);
+  const { items, removeItem, addItem, changeQuantity } = useCart();
 
   return (
    <div>
@@ -31,19 +34,66 @@ export default function BagDrawer() {
             </div>
 
             <div className="flex h-[calc(100vh-80px)] flex-col justify-end px-6 pb-8">
-              <p className="mb-5 text-xs font-semibold text-black">
-                Your shopping bag is empty.{" "}
-                <a className="underline" href="/catalog">
-                  Shop
-                </a>{" "}
-                new series
-              </p>
+              {items.length === 0 ? (
+                <p className="mb-5 text-xs font-semibold text-black">
+                  Your shopping bag is empty. <a className="underline" href="/catalog">Shop</a>
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {items.map((it, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img src={it.img} alt={it.name} className="w-14 h-14 object-cover" />
+                        <div>
+                          <div className="text-sm font-semibold">{it.name}</div>
+                          <div className="text-xs text-gray-600">{it.color} {it.size}</div>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="text-sm">{it.price}</div>
+                        <div className="flex items-center justify-end gap-2 mt-2">
+                          <button onClick={() => changeQuantity(i, -1)} className="px-2 bg-white border rounded">-</button>
+                          <span className="text-sm">{it.quantity}</span>
+                          <button onClick={() => changeQuantity(i, 1)} className="px-2 bg-white border rounded">+</button>
+                        </div>
+                        <button onClick={() => removeItem(i)} className="text-xs text-red-600 mt-2">Remove</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-6">
+                <h3 className="text-sm font-semibold mb-3">More items</h3>
+                <div className="space-y-3">
+                  {products.map((p) => (
+                    <div key={p.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img src={p.img} alt={p.name} className="w-12 h-12 object-cover" />
+                        <div>
+                          <div className="text-sm font-semibold">{p.name}</div>
+                          <div className="text-xs text-gray-600">{p.price}</div>
+                        </div>
+                      </div>
+                      <div>
+                        <button
+                          onClick={() => addItem({ id: p.id, name: p.name, price: p.price, img: p.img })}
+                          className="text-xs bg-black text-white px-3 py-1 rounded"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <a
                 href="/catalog"
-                className="flex h-16 items-center justify-center rounded bg-purple-700 text-xs font-bold text-white"
+                className="mt-6 flex h-12 items-center justify-center rounded bg-purple-700 text-xs font-bold text-white"
               >
-                Browse Catalog
+                Continue Shopping
               </a>
             </div>
           </div>

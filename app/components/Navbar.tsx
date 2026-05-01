@@ -7,11 +7,14 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
 const [open, setOpen] = useState(false);
+const [role, setRole] = useState<string | null>(null);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    const r = localStorage.getItem("role");
+    if (r) setRole(r);
   }, []);
 
   const logout = () => {
@@ -25,7 +28,7 @@ const [open, setOpen] = useState(false);
     <nav className="fixed top-0 left-0 w-full h-16 bg-black text-white z-[999] flex items-center justify-between px-6 py-4 flex-row gap-70">
       
       {/* Logo */}
-      <h1 className="text-xl font-bold">Le Wilson store </h1>
+      <h1 className="text-xl font-bold">DA store </h1>
 
       {/* Links */}
       <div className="flex gap-6">
@@ -38,6 +41,11 @@ const [open, setOpen] = useState(false);
           <Link href="/catalog">Catalog</Link>
           <ArrowUpRight size={20} />
         </div>
+        {role === "admin" && (
+          <div className="ml-6">
+            <Link href="/admin/dashboard">Admin</Link>
+          </div>
+        )}
       </div>
 
       {/* RIGHT SIDE */}

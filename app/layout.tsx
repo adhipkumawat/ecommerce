@@ -1,7 +1,6 @@
 import Navbar from "./components/Navbar";
 import "./globals.css";
-
-
+import { CartProvider } from "./components/CartContext";
 
 export default function RootLayout({
   children,
@@ -9,12 +8,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   <html lang="en">
+    <html lang="en">
       <body>
-        <Navbar />   
-        <main className="pt-16">
-          {children}
-        </main>
+        <CartProvider>
+          <Navbar />
+          <main className="pt-16">{children}</main>
+        </CartProvider>
       </body>
     </html>
   );
