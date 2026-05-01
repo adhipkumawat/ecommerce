@@ -1,24 +1,11 @@
 import { NextResponse } from "next/server";
-
-const users: any[] = [];
+import clientPromise from "../../../lib/mongodb";
 
 export async function POST(req: Request) {
   const { name, email, password, role, adminCode } = await req.json();
 
   if (!name || !email || !password) {
-    return NextResponse.json(
-      { message: "All fields are required" },
-      { status: 400 }
-    );
-  }
-
-  const alreadyUser = users.find((u) => u.email === email);
-
-  if (alreadyUser) {
-    return NextResponse.json(
-      { message: "User already exists" },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: "All fields are required" }, { status: 400 });
   }
 
   const userRole = role === "admin" ? "admin" : "user";
@@ -30,24 +17,32 @@ export async function POST(req: Request) {
     }
   }
 
-  const newUser = {
-    id: Date.now(),
+  const client = await clientPromise;
+  const db = client.db("ecommerce");
+  const usersCollection = db.collection("users");
+
+  const alreadyUser = await usersCollection.findOne({ email });
+  if (alreadyUser) {
+    return NextResponse.json({ message: "User already exists" }, { status: 400 });
+  }
+
+  const userDoc = {
     name,
     email,
     password,
     role: userRole,
+    createdAt: new Date(),
   };
 
-  users.push(newUser);
+  const result = await usersCollection.insertOne(userDoc);
 
   return NextResponse.json({
     message: "Account created successfully",
     user: {
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
+      id: result.insertedId,
+      name: userDoc.name,
+      email: userDoc.email,
+      role: userDoc.role,
     },
   });
 }
-
-export { users };

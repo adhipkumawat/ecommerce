@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { users } from "../register/route";
+import clientPromise from "../../../lib/mongodb";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
@@ -16,9 +16,11 @@ export async function POST(req: Request) {
     });
   }
 
-  const user = users.find(
-    (u) => u.email === email && u.password === password
-  );
+  const client = await clientPromise;
+  const db = client.db("ecommerce");
+  const usersCollection = db.collection("users");
+
+  const user = await usersCollection.findOne({ email, password });
 
   if (!user) {
     return NextResponse.json(
