@@ -63,7 +63,6 @@ export default function LoginPage() {
             <label className="text-sm text-white/70">Email</label>
             <input
               type="email"
-              placeholder="admin@example.com"
               className="mt-2 w-full rounded-full bg-transparent border border-white/20 px-5 py-3 outline-none focus:border-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +74,6 @@ export default function LoginPage() {
             <label className="text-sm text-white/70">Password</label>
             <input
               type="password"
-              placeholder="Enter password"
               className="mt-2 w-full rounded-full bg-transparent border border-white/20 px-5 py-3 outline-none focus:border-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

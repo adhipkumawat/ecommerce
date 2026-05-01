@@ -50,7 +50,6 @@ export default function RegisterPage() {
             <label className="text-sm text-white/70">Full Name</label>
             <input
               type="text"
-              placeholder="Adhip Kumawat"
               className="mt-2 w-full rounded-full bg-transparent border border-white/20 px-5 py-3 outline-none focus:border-white"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -62,7 +61,6 @@ export default function RegisterPage() {
             <label className="text-sm text-white/70">Email</label>
             <input
               type="email"
-              placeholder="adhip@example.com"
               className="mt-2 w-full rounded-full bg-transparent border border-white/20 px-5 py-3 outline-none focus:border-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -74,7 +72,6 @@ export default function RegisterPage() {
             <label className="text-sm text-white/70">Password</label>
             <input
               type="password"
-              placeholder="Create password"
               className="mt-2 w-full rounded-full bg-transparent border border-white/20 px-5 py-3 outline-none focus:border-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
