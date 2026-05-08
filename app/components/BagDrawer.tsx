@@ -66,27 +66,7 @@ export default function BagDrawer() {
 
               <div className="mt-6">
                 <h3 className="text-sm font-semibold mb-3">More items</h3>
-                <div className="space-y-3">
-                  {products.map((p) => (
-                    <div key={p.id} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <img src={p.img} alt={p.name} className="w-12 h-12 object-cover" />
-                        <div>
-                          <div className="text-sm font-semibold">{p.name}</div>
-                          <div className="text-xs text-gray-600">{p.price}</div>
-                        </div>
-                      </div>
-                      <div>
-                        <button
-                          onClick={() => addItem({ id: p.id, name: p.name, price: p.price, img: p.img })}
-                          className="text-xs bg-black text-white px-3 py-1 rounded"
-                        >
-                          Add
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+           
               </div>
 
               <a

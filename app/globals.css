@@ -1,2 +1,11 @@
 @import "tailwindcss";
 
+/* helper to hide horizontal scrollbar for filter row */
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
